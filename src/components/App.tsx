@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import SignIn from './Auth/SignIn';
 import SignUp from './Auth/SignUp';
 
@@ -10,6 +10,8 @@ import { ThemeProvider } from '@material-ui/styles';
 // Server validation
 // Implement server and db
 // Connect frontend to backend using api
+
+// Guard routes
 
 const theme = createMuiTheme({
   typography: {
