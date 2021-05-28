@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
@@ -12,36 +12,8 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-
-  form {
-    width: 25%;
-  }
-
-  .MuiFormControl-root {
-    margin-bottom: 20px;
-  }
-`;
-
-const Title = styled.h1`
-  font-family: 'Courier';
-`;
-
-const validationSchema = yup.object({
-  email: yup
-    .string('Enter your email')
-    .email('Enter a valid email')
-    .required('Email is required'),
-  password: yup
-    .string('Enter your password')
-    .min(8, 'Password should be of minimum 8 characters length')
-    .required('Password is required'),
-});
+import { validationSchema } from './meta';
+import { Wrapper, Title, StyledLink } from './SignFormStyle';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -148,6 +120,7 @@ const SignUp = () => {
         <Button color="primary" variant="contained" fullWidth type="submit">
           Submit
         </Button>
+        <StyledLink to="/signin">Already have an account? Sign in</StyledLink>
       </form>
     </Wrapper>
   );
