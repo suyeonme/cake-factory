@@ -13,12 +13,20 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { Wrapper, Title, StyledLink } from './SignFormStyle';
 import { validationSchema } from '../../utils/authSchema';
 
+export interface UserType {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
 interface SigninFormProps {
   showPassword: boolean;
   onToggle: () => void;
+  onSubmit: (values: UserType) => void;
 }
 
-const SignupForm = ({ showPassword, onToggle }: SigninFormProps) => {
+const SignupForm = ({ showPassword, onToggle, onSubmit }: SigninFormProps) => {
   const formik = useFormik({
     initialValues: {
       firstName: '',
@@ -27,9 +35,7 @@ const SignupForm = ({ showPassword, onToggle }: SigninFormProps) => {
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: values => {
-      // alert(JSON.stringify(values, null, 2));
-    },
+    onSubmit: (values: UserType) => onSubmit(values),
   });
 
   return (

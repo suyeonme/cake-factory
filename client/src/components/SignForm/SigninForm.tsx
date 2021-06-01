@@ -10,22 +10,22 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { Wrapper, Title, StyledLink } from './SignFormStyle';
 import { validationSchema } from '../../utils/authSchema';
+import { UserType } from '../../pages/Signin';
 
 interface SigninFormProps {
   showPassword: boolean;
   onToggle: () => void;
+  onSubmit: (values: UserType) => void;
 }
 
-const SigninForm = ({ showPassword, onToggle }: SigninFormProps) => {
+const SigninForm = ({ showPassword, onToggle, onSubmit }: SigninFormProps) => {
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: values => {
-      // alert(JSON.stringify(values, null, 2));
-    },
+    onSubmit: values => onSubmit(values),
   });
 
   return (
