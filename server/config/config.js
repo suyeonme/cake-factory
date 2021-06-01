@@ -5,4 +5,5 @@ require('dotenv').config({
 module.exports = {
   mongodbUrl: process.env.MONGODB_URL,
   port: process.env.PORT,
+  secret: process.env.SECRET_KEY,
 };

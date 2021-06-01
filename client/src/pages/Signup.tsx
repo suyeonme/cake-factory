@@ -11,8 +11,13 @@ const Signin = () => {
   };
 
   const handleSubmit = async (values: UserType): Promise<any> => {
-    const res = await axios.post('/signup', values);
-    console.log(res);
+    try {
+      const res = await axios.post('/signup', values);
+      console.log(res);
+    } catch (error) {
+      const { data, status } = error.response;
+      console.log({ status, data });
+    }
   };
 
   return (
