@@ -53,7 +53,7 @@ module.exports.signup_post = async (req, res) => {
     res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
     res
       .status(201)
-      .json({ user: { id: user._id, firstName, lastName, email } });
+      .json({ user: { id: user._id, firstName, lastName, email, token } });
   } catch (error) {
     const errors = handleErrors(error);
     console.log(errors);
@@ -69,4 +69,25 @@ module.exports.signin_get = (req, res) => {
 module.exports.signin_post = (req, res) => {
   console.log(req.body);
   res.json({ user: req.body });
+};
+
+module.exports.jwt_get = (req, res, next) => {
+  const token = req.cookies.jwt;
+  console.log({ token });
+
+  // check json web token exists & is verified
+  if (token) {
+    jwt.verify(token, secret, (err, decodedToken) => {
+      if (err) {
+        console.log(err.message);
+        res.redirect('/signin');
+      } else {
+        console.log({ decodedToken });
+        res.json({ decodedToken });
+        // next();
+      }
+    });
+  } else {
+    res.redirect('/signin');
+  }
 };

@@ -5,11 +5,13 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
+import CakeCollection from './pages/CakeCollection';
 import PageNotFound from './pages/PageNotFound';
 
 const theme = createMuiTheme({
@@ -36,9 +38,13 @@ const App = () => {
   const [isAuth, setIsAuth] = useState(false);
 
   useEffect(() => {
-    // check jwt
-    setIsAuth(false);
+    const jwt = Cookies.get('jwt');
+    if (jwt) {
+      setIsAuth(true);
+    }
   }, []);
+
+  // if not authenticated redirect to signin
 
   return (
     <ThemeProvider theme={theme}>
@@ -46,12 +52,13 @@ const App = () => {
         <Switch>
           <Route path="/signin" exact={true} component={Signin} />
           <Route path="/signup" exact={true} component={Signup} />
-          <PrivateRoute
-            path="/"
+          <Route path="/collection" exact={true} component={CakeCollection} />
+          {/* <PrivateRoute
+            path="/collection"
             exact={true}
-            component={PageNotFound}
+            component={CakeCollection}
             isAuth={isAuth}
-          />
+          /> */}
           <Route component={PageNotFound} />
         </Switch>
       </Router>

@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const { port, mongodbUrl } = require('./config/config'); // env
 const authRoutes = require('./routes/authRoutes');
+const collectionRoutes = require('./routes/collectionRoutes');
 
 const app = express();
 
@@ -19,20 +20,6 @@ app.use(
     extended: true,
   })
 );
-// app.use((req, res, next) => {
-//   // handle CORS error
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
-//   res.setHeader(
-//     'Access-Control-Allow-Methods',
-//     'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-//   );
-//   res.setHeader(
-//     'Access-Control-Allow-Headers',
-//     'X-Requested-With,content-type'
-//   );
-//   res.setHeader('Access-Control-Allow-Credentials', true);
-//   next();
-// });
 
 // database connection
 const dbURI = mongodbUrl;
@@ -51,5 +38,6 @@ mongoose
 // routes
 // app.get('*', checkUser);
 // app.get('/', (req, res) => res.render('home'));
+// app.get('/collection', requireAuth, (req, res) => res.render('smoothies'));
 app.use(authRoutes);
-// app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
+app.use(collectionRoutes);
