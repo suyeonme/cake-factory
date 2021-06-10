@@ -30,7 +30,7 @@ const SigninForm = ({ showPassword, onToggle, onSubmit }: SigninFormProps) => {
 
   return (
     <Wrapper>
-      <Title>Signip</Title>
+      <Title>Signin</Title>
       <form onSubmit={formik.handleSubmit}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <TextField

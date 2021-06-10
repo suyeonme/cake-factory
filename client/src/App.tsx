@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
+  Link,
 } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import axios from 'axios';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
+import Home from './pages/Home';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import CakeCollection from './pages/CakeCollection';
@@ -20,45 +22,67 @@ const theme = createMuiTheme({
   },
 });
 
-const PrivateRoute: React.FC<{
-  component: React.FC;
-  path: string;
-  exact: boolean;
+interface PrivateRouteProps {
   isAuth: boolean;
-}> = props => {
-  const { path, exact, component, isAuth } = props;
+  path: string;
+  exact: any;
+  component: React.FC;
+}
 
-  if (isAuth) {
-    return <Route path={path} exact={exact} component={component} />;
-  }
-  return <Redirect to="/signin" />;
+const PrivateRoute = ({
+  isAuth,
+  path,
+  exact,
+  component,
+}: PrivateRouteProps) => {
+  return isAuth ? (
+    <Route path={path} exact={exact} component={component} />
+  ) : (
+    <Redirect to="/signin" />
+  );
 };
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
+  console.log({ isAuth });
 
-  useEffect(() => {
-    const jwt = Cookies.get('jwt');
-    if (jwt) {
+  const handleCheckAuth = useCallback(async () => {
+    const res = await axios('/jwt_get');
+    const token = await res.data.token;
+    if (token) {
+      console.log({ token });
       setIsAuth(true);
     }
   }, []);
 
-  // if not authenticated redirect to signin
+  useEffect(() => {
+    handleCheckAuth();
+  }, [handleCheckAuth]);
 
   return (
     <ThemeProvider theme={theme}>
       <Router>
+        <Link to="/collection">Collection</Link>
+        <Link to="/">Home</Link>
+
         <Switch>
-          <Route path="/signin" exact={true} component={Signin} />
-          <Route path="/signup" exact={true} component={Signup} />
-          <Route path="/collection" exact={true} component={CakeCollection} />
-          {/* <PrivateRoute
+          <Route path="/" exact={true} component={Home} />
+          <Route
+            path="/signin"
+            exact={true}
+            component={() => <Signin setIsAuth={setIsAuth} />}
+          />
+          <Route
+            path="/signup"
+            exact={true}
+            component={() => <Signup setIsAuth={setIsAuth} />}
+          />
+          <PrivateRoute
             path="/collection"
             exact={true}
             component={CakeCollection}
             isAuth={isAuth}
-          /> */}
+          />
           <Route component={PageNotFound} />
         </Switch>
       </Router>

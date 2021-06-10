@@ -1,16 +1,6 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const CakeCollection = () => {
-  const getJwt = async () => {
-    const res = await axios('/jwt_get');
-    console.log(res);
-  };
-
-  useEffect(() => {
-    getJwt();
-  }, []);
-
+const CakeCollection = (props: any) => {
   return <div>CakeCollection</div>;
 };
 

@@ -4,9 +4,13 @@ import { useHistory } from 'react-router-dom';
 import { UserType } from '../components/SignForm/SignupForm';
 import SignupForm from '../components/SignForm/SignupForm';
 
-const Signin = () => {
-  const history = useHistory();
+interface SigninProps {
+  setIsAuth: (auth: boolean) => void;
+}
+
+const Signin = ({ setIsAuth }: SigninProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const history = useHistory();
 
   const handleToggleShowPassword = (): void => {
     setShowPassword(!showPassword);
@@ -14,13 +18,16 @@ const Signin = () => {
 
   const handleSubmit = async (values: UserType): Promise<any> => {
     try {
-      const user = await axios.post('/signup', values);
+      const res = await axios.post('/signup', values);
+      const user = res.data.user;
       if (user) {
+        setIsAuth(true);
         history.push('/collection');
+        console.log({ user });
       }
     } catch (error) {
       const { data, status } = error.response;
-      console.log({ status, data });
+      console.log(status, data.errors);
     }
   };
 

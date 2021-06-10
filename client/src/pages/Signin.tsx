@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+
 import SigninForm from '../components/SignForm/SigninForm';
 
 export interface UserType {
@@ -7,12 +9,27 @@ export interface UserType {
   password: string;
 }
 
-const Signin = () => {
+interface SigninProps {
+  setIsAuth: (auth: boolean) => void;
+}
+
+const Signin = ({ setIsAuth }: SigninProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const history = useHistory();
 
   const handleSubmit = async (values: UserType): Promise<any> => {
-    const res = await axios.post('/signin', values);
-    console.log(res);
+    try {
+      const res = await axios.post('/signin', values);
+      const user = res.data.user;
+      if (user) {
+        // setIsAuth(true);
+        // history.push('/collection');
+        console.log({ user });
+      }
+    } catch (error) {
+      const { data, status } = error.response;
+      console.log(status, data.errors);
+    }
   };
 
   const handleToggleShowPassword = (): void => {

@@ -63,7 +63,7 @@ module.exports.signup_post = async (req, res) => {
 
 module.exports.signin_get = (req, res) => {
   // Render react-component
-  res.render({ data: 'success!' });
+  res.json({ data: 'success!' });
 };
 
 module.exports.signin_post = (req, res) => {
@@ -71,9 +71,8 @@ module.exports.signin_post = (req, res) => {
   res.json({ user: req.body });
 };
 
-module.exports.jwt_get = (req, res, next) => {
+module.exports.jwt_get = (req, res) => {
   const token = req.cookies.jwt;
-  console.log({ token });
 
   // check json web token exists & is verified
   if (token) {
@@ -83,8 +82,7 @@ module.exports.jwt_get = (req, res, next) => {
         res.redirect('/signin');
       } else {
         console.log({ decodedToken });
-        res.json({ decodedToken });
-        // next();
+        res.json({ token: decodedToken });
       }
     });
   } else {
