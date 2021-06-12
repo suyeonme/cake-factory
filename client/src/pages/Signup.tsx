@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+
 import { UserType } from '../components/SignForm/SignupForm';
 import SignupForm from '../components/SignForm/SignupForm';
 
@@ -23,7 +24,6 @@ const Signin = ({ setIsAuth }: SigninProps) => {
       if (user) {
         setIsAuth(true);
         history.push('/collection');
-        console.log({ user });
       }
     } catch (error) {
       const { data, status } = error.response;

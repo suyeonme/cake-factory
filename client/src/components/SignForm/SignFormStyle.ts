@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
   form {
-    width: 20%;
+    width: 30%;
   }
   .MuiFormControl-root {
     margin-bottom: 20px;

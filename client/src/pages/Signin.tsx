@@ -22,9 +22,8 @@ const Signin = ({ setIsAuth }: SigninProps) => {
       const res = await axios.post('/signin', values);
       const user = res.data.user;
       if (user) {
-        // setIsAuth(true);
-        // history.push('/collection');
-        console.log({ user });
+        setIsAuth(true);
+        history.push('/collection');
       }
     } catch (error) {
       const { data, status } = error.response;

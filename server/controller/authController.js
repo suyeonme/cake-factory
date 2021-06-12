@@ -66,9 +66,18 @@ module.exports.signin_get = (req, res) => {
   res.json({ data: 'success!' });
 };
 
-module.exports.signin_post = (req, res) => {
-  console.log(req.body);
-  res.json({ user: req.body });
+module.exports.signin_post = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.login(email, password);
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+    res.status(200).json({ user: user._id });
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
+  }
 };
 
 module.exports.jwt_get = (req, res) => {

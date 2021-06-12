@@ -44,13 +44,11 @@ const PrivateRoute = ({
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
-  console.log({ isAuth });
 
   const handleCheckAuth = useCallback(async () => {
     const res = await axios('/jwt_get');
     const token = await res.data.token;
     if (token) {
-      console.log({ token });
       setIsAuth(true);
     }
   }, []);
