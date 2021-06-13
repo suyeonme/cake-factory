@@ -21,20 +21,20 @@ module.exports.signup_post = async (req, res) => {
   }
 };
 
-module.exports.jwt_get = (req, res) => {
+module.exports.signin_get = (req, res) => {
   // Check user is signed in (jwt exists)
   const token = req.cookies.jwt;
   if (token) {
     jwt.verify(token, secret, (err, decodedToken) => {
       if (err) {
         console.log(err.message);
-        res.redirect('/signin');
+        // res.redirect('/signin');
       } else {
         res.json({ token: decodedToken });
       }
     });
   } else {
-    res.redirect('/signin');
+    res.send('Please authenticate.');
   }
 };
 

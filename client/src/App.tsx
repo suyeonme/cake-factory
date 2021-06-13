@@ -17,7 +17,7 @@ const App = () => {
   const [isAuth, setIsAuth] = useState(false);
 
   const handleCheckAuth = useCallback(async () => {
-    const res = await axios('/jwt_get');
+    const res = await axios('/signin_get');
     const token = await res.data.token;
     if (token) {
       setIsAuth(true);

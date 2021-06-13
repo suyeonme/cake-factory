@@ -37,7 +37,6 @@ mongoose
   .catch(err => console.log(err));
 
 // routes
-// app.get('*', auth);
 app.get('*', checkUser);
 app.use(authRoutes);
 app.use(collectionRoutes);
