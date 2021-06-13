@@ -7,6 +7,7 @@ const cors = require('cors');
 const { port, mongodbUrl } = require('./config/config'); // env
 const authRoutes = require('./routes/authRoutes');
 const collectionRoutes = require('./routes/collectionRoutes');
+const { auth, checkUser } = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -36,8 +37,7 @@ mongoose
   .catch(err => console.log(err));
 
 // routes
-// app.get('*', checkUser);
-// app.get('/', (req, res) => res.render('home'));
-// app.get('/collection', requireAuth, (req, res) => res.render('smoothies'));
+// app.get('*', auth);
+app.get('*', checkUser);
 app.use(authRoutes);
 app.use(collectionRoutes);

@@ -1,55 +1,15 @@
 const jwt = require('jsonwebtoken');
+
 const User = require('../models/User');
 const { secret } = require('../config/config');
-
-// Utils
-const MAX_AGE = 24 * 60 * 60;
-const createToken = id => {
-  return jwt.sign({ id }, secret, {
-    expiresIn: MAX_AGE,
-  });
-};
-
-const handleErrors = err => {
-  let errors = { email: '', password: '' };
-  console.log(err.message, err.code);
-
-  // incorrect email
-  if (err.message === 'incorrect email') {
-    errors.email = 'That email is not registered';
-  }
-
-  // incorrect password
-  if (err.message === 'incorrect password') {
-    errors.password = 'That password is incorrect';
-  }
-
-  // duplicate email error
-  if (err.code === 11000) {
-    errors.email = 'that email is already registered';
-    return errors;
-  }
-
-  // validation errors
-  if (err.message.includes('user validation failed')) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
-    });
-  }
-
-  return errors;
-};
-
-module.exports.signup_get = (req, res) => {
-  // Render react-component
-};
+const { MAX_AGE, handleErrors } = require('../utils/utils');
 
 module.exports.signup_post = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
     const user = await User.create({ firstName, lastName, email, password });
-    const token = createToken(user._id);
+    const token = await user.createToken();
     res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
     res
       .status(201)
@@ -61,17 +21,29 @@ module.exports.signup_post = async (req, res) => {
   }
 };
 
-module.exports.signin_get = (req, res) => {
-  // Render react-component
-  res.json({ data: 'success!' });
+module.exports.jwt_get = (req, res) => {
+  // Check user is signed in (jwt exists)
+  const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, secret, (err, decodedToken) => {
+      if (err) {
+        console.log(err.message);
+        res.redirect('/signin');
+      } else {
+        res.json({ token: decodedToken });
+      }
+    });
+  } else {
+    res.redirect('/signin');
+  }
 };
 
 module.exports.signin_post = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.login(email, password);
-    const token = createToken(user._id);
+    const user = await User.signin(email, password);
+    const token = await user.createToken();
     res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
     res.status(200).json({ user: user._id });
   } catch (err) {
@@ -80,21 +52,18 @@ module.exports.signin_post = async (req, res) => {
   }
 };
 
-module.exports.jwt_get = (req, res) => {
-  const token = req.cookies.jwt;
+module.exports.signout_get = async (req, res) => {
+  try {
+    // Remove token from tokens array
+    req.user.tokens = req.user.tokens.filter(
+      token => token.token !== req.token
+    );
+    await req.user.save();
 
-  // check json web token exists & is verified
-  if (token) {
-    jwt.verify(token, secret, (err, decodedToken) => {
-      if (err) {
-        console.log(err.message);
-        res.redirect('/signin');
-      } else {
-        console.log({ decodedToken });
-        res.json({ token: decodedToken });
-      }
-    });
-  } else {
-    res.redirect('/signin');
+    // Remove jwt from user's browser
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.send();
+  } catch (e) {
+    res.status(500).json(e);
   }
 };
