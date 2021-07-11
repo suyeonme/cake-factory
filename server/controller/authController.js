@@ -29,12 +29,13 @@ module.exports.signin_get = (req, res) => {
       if (err) {
         console.log(err.message);
         // res.redirect('/signin');
+        res.end();
       } else {
         res.json({ token: decodedToken });
       }
     });
   } else {
-    res.send('Please authenticate.');
+    res.json('Please authenticate.');
   }
 };
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 
 interface NavProps {
+  isAuth: boolean;
   setIsAuth: (auth: boolean) => void;
 }
 
-const Nav = ({ setIsAuth }: NavProps) => {
+const Nav = ({ isAuth, setIsAuth }: NavProps) => {
   const history = useHistory();
 
   const onSignout = async () => {
@@ -20,7 +20,7 @@ const Nav = ({ setIsAuth }: NavProps) => {
     <div>
       <Link to="/">Home</Link>
       <Link to="/collection">Collection</Link>
-      <button onClick={onSignout}>Signout</button>
+      {isAuth && <button onClick={onSignout}>Signout</button>}
     </div>
   );
 };

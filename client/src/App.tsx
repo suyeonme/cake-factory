@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -28,11 +28,19 @@ const App = () => {
     handleCheckAuth();
   }, [handleCheckAuth]);
 
+  const commonProps = useMemo(
+    () => ({
+      isAuth,
+      setIsAuth,
+    }),
+    [isAuth]
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <Layout setIsAuth={setIsAuth}>
-          <Routes isAuth={isAuth} setIsAuth={setIsAuth} />
+        <Layout {...commonProps}>
+          <Routes {...commonProps} />
         </Layout>
       </Router>
     </ThemeProvider>

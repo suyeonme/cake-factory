@@ -14,6 +14,11 @@ interface PrivateRouteProps {
   component: React.FC;
 }
 
+interface RoutesProps {
+  isAuth: boolean;
+  setIsAuth: (isAuth: boolean) => void;
+}
+
 const PrivateRoute = ({
   isAuth,
   path,
@@ -27,9 +32,9 @@ const PrivateRoute = ({
   );
 };
 
-const Routes = ({ isAuth, setIsAuth }: any) => (
+const Routes = ({ isAuth, setIsAuth }: RoutesProps) => (
   <Switch>
-    <Route path="/" exact={true} component={Home} />
+    <Route path="/" exact={true} component={() => <Home isAuth={isAuth} />} />
     <Route
       path="/signin"
       exact={true}
