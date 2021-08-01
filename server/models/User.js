@@ -6,39 +6,50 @@ const bcrypt = require('bcrypt');
 const { secret } = require('../config/config');
 const { MAX_AGE } = require('../utils/utils');
 
-const UserSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    unique: true,
-    lowercase: true,
-    trim: true,
-    required: [true, 'Please enter an email'],
-    validate: [isEmail, 'Please enter a valid email'],
-  },
-  password: {
-    type: String,
-    trim: true,
-    required: [true, 'Please enter a password'],
-    minlength: [8, 'Minimum password length is 8 characters'],
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
-      },
+const UserSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
     },
-  ],
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      required: [true, 'Please enter an email'],
+      validate: [isEmail, 'Please enter a valid email'],
+    },
+    password: {
+      type: String,
+      trim: true,
+      required: [true, 'Please enter a password'],
+      minlength: [8, 'Minimum password length is 8 characters'],
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+UserSchema.virtual('cake', {
+  ref: 'Cake',
+  localField: '_id',
+  foreignField: 'owner',
 });
 
 UserSchema.methods.createToken = async function () {
@@ -76,6 +87,13 @@ UserSchema.pre('save', async function (next) {
   }
   next();
 });
+
+// Remove tasks when user is removed
+// UserSchema.pre('remove', async function (next) {
+//   const user = this;
+//   await Collection.deleteMany({ owner: user._id });
+//   next();
+// });
 
 const User = mongoose.model('user', UserSchema);
 module.exports = User;

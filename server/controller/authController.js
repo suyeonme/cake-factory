@@ -28,7 +28,6 @@ module.exports.signin_get = (req, res) => {
     jwt.verify(token, secret, (err, decodedToken) => {
       if (err) {
         console.log(err.message);
-        // res.redirect('/signin');
         res.end();
       } else {
         res.json({ token: decodedToken });

@@ -6,8 +6,8 @@ const cors = require('cors');
 
 const { port, mongodbUrl } = require('./config/config'); // env
 const authRoutes = require('./routes/authRoutes');
-const collectionRoutes = require('./routes/collectionRoutes');
-const { auth, checkUser } = require('./middleware/authMiddleware');
+const cakeRoutes = require('./routes/cakeRoutes');
+const { checkUser } = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -21,6 +21,7 @@ app.use(
     extended: true,
   })
 );
+app.use(checkUser); // (**)
 
 // database connection
 const dbURI = mongodbUrl;
@@ -37,6 +38,6 @@ mongoose
   .catch(err => console.log(err));
 
 // routes
-app.get('*', checkUser);
+// app.get('*', checkUser);
 app.use(authRoutes);
-app.use(collectionRoutes);
+app.use(cakeRoutes);

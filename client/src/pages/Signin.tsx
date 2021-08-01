@@ -27,7 +27,8 @@ const Signin = ({ setIsAuth }: SigninProps) => {
       }
     } catch (error) {
       const { data, status } = error.response;
-      console.log(status, data.errors);
+      console.log(error?.response);
+      // console.log(status, data.errors);
     }
   };
 
